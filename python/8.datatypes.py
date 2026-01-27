@@ -22,3 +22,7 @@ print(type(q))
 l=range(6)
 print(list(l))
 
+#complex
+f=1j
+print(type(f))
+
