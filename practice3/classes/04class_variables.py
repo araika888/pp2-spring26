@@ -5,7 +5,7 @@ class uni():
     def __init__(self, name):
         self.name = name
 
-name = "Arai"
+name = "Arai" 
 p1 = uni(name)
 print(p1.uni_name)
 
