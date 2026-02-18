@@ -24,3 +24,4 @@ if a * b == 0:
     print("equal is 0")
 else:
     print("it's not equal 0")
+    
