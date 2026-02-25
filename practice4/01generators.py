@@ -42,3 +42,4 @@ def num(n):
 n=int(input())
 for i in num(n):
     print(i)
+
