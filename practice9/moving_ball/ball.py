@@ -17,14 +17,14 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
 
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_UP]:
+        keys = pygame.key.get_pressed() 
+        if keys[pygame.K_UP]:#если вверх то уменьшаем потому что у идет вниз
             y -= speed
-        if keys[pygame.K_DOWN]:
+        if keys[pygame.K_DOWN]:#если вниз то увеличиваем потому что у идет вниз
             y += speed
-        if keys[pygame.K_LEFT]:
+        if keys[pygame.K_LEFT]:#если на право то уменьшаем
             x -= speed
-        if keys[pygame.K_RIGHT]:
+        if keys[pygame.K_RIGHT]:#если на лево то умножаем 
             x += speed
 
         if x - radius < 0:
