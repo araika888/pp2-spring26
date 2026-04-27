@@ -27,7 +27,7 @@ GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 GRAY = (100, 100, 100)
 
-font = pygame.font.SysFont("Arial", 34)  # Было Sysfont -> SysFont
+font = pygame.font.SysFont("Arial", 34)  
 
 def generate_walls(level):
     walls = []
@@ -111,7 +111,7 @@ while running:
         else:
             snake.pop()
         
-        create_background(screen, WIDTH, HEIGHT)  # Было 600,600
+        create_background(screen, WIDTH, HEIGHT)  
     
     for s in snake:
         pygame.draw.rect(screen, GREEN, (*s, TILE, TILE))
