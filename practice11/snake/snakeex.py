@@ -1,0 +1,156 @@
+import pygame
+import random
+
+pygame.init()
+
+WIDTH, HEIGHT = 600, 600
+TILE = 20
+
+def create_background(screen, width, height):
+    colors = [(255, 255, 255), (212, 212, 212)]
+    y = 0
+    while y < height:
+        x = 0
+        while x < width:
+            row = y // TILE
+            col = x // TILE
+            pygame.draw.rect(screen, colors[(row + col) % 2], pygame.Rect(x, y, TILE, TILE))
+            x += TILE
+        y += TILE
+
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+clock = pygame.time.Clock()
+
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GREEN = (0, 255, 0)
+RED = (255, 0, 0)
+GRAY = (100, 100, 100)
+
+font = pygame.font.SysFont("Arial", 34)
+
+# Задание 1: три типа еды с разными очками и вероятностью появления
+FOOD_TYPES = [
+    {"color": (255, 0, 0),   "value": 1, "weight": 60},  # красная — часто, +1
+    {"color": (255, 165, 0), "value": 3, "weight": 30},  # оранжевая — реже, +3
+    {"color": (255, 215, 0), "value": 5, "weight": 10},  # золотая — редко, +5
+]
+
+def generate_walls(level):
+    walls = []
+    try:
+        f = open("levels/level{}.txt".format(level), "r")
+        row = -1
+        for line in f:
+            row = row + 1
+            col = -1
+            for c in line:
+                col = col + 1
+                if c == '#':
+                    walls.append((col * TILE, row * TILE))
+        f.close()
+    except FileNotFoundError:
+        print(f"Level file level{level}.txt not found")
+    return walls
+
+def generate_food(snake, walls):
+    # Генерируем еду в случайном месте, не занятом змеёй или стеной
+    while True:
+        x = random.randrange(0, WIDTH, TILE)
+        y = random.randrange(0, HEIGHT, TILE)
+        if (x, y) not in snake and (x, y) not in walls:
+            # Задание 1: выбираем тип еды взвешенно случайно
+            food_type = random.choices(FOOD_TYPES, weights=[f["weight"] for f in FOOD_TYPES])[0]
+            # Задание 2: запоминаем время появления для таймера
+            return {"pos": (x, y), "type": food_type, "timer": pygame.time.get_ticks()}
+
+def reset_game():
+    snake = [(100, 100), (80, 100), (60, 100)]
+    dx, dy = TILE, 0
+    level = 1
+    walls = generate_walls(level)
+    food = generate_food(snake, walls)
+    score = 0
+    speed = 5
+    return snake, dx, dy, food, score, level, speed, walls
+
+snake, dx, dy, food, score, level, speed, walls = reset_game()
+game_over = False
+
+running = True
+while running:
+    screen.fill(WHITE)
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_UP and dy == 0:
+                dx, dy = 0, -TILE
+            if event.key == pygame.K_DOWN and dy == 0:
+                dx, dy = 0, TILE
+            if event.key == pygame.K_LEFT and dx == 0:
+                dx, dy = -TILE, 0
+            if event.key == pygame.K_RIGHT and dx == 0:
+                dx, dy = TILE, 0
+
+    if not game_over:
+        # Задание 2: если еда висит дольше 5 секунд — исчезает, появляется новая
+        if pygame.time.get_ticks() - food["timer"] > 5000:
+            food = generate_food(snake, walls)
+
+        head = (snake[0][0] + dx, snake[0][1] + dy)
+
+        if head[0] < 0 or head[0] >= WIDTH or head[1] < 0 or head[1] >= HEIGHT:
+            game_over = True
+
+        if head in snake:
+            game_over = True
+
+        if head in walls:
+            game_over = True
+
+        snake.insert(0, head)
+
+        if head == food["pos"]:
+            # Задание 1: очки зависят от типа еды
+            score += food["type"]["value"]
+
+            if score != 0 and score % 3 == 0:
+                level += 1
+                speed += 1
+                walls = generate_walls(level)
+
+            food = generate_food(snake, walls)
+        else:
+            snake.pop()
+
+        create_background(screen, WIDTH, HEIGHT)
+
+    for s in snake:
+        pygame.draw.rect(screen, GREEN, (*s, TILE, TILE))
+
+    # Задание 1: рисуем еду цветом её типа
+    pygame.draw.rect(screen, food["type"]["color"], (*food["pos"], TILE, TILE))
+
+    for w in walls:
+        pygame.draw.rect(screen, GRAY, (*w, TILE, TILE))
+
+    text = font.render(f"Score: {score} Level: {level}", True, BLACK)
+    screen.blit(text, (10, 10))
+
+    if game_over:
+        screen.fill(RED)
+        over = font.render("GAME OVER! Press R FOR RESTART", True, BLACK)
+        screen.blit(over, (70, 260))
+
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_r]:
+            snake, dx, dy, food, score, level, speed, walls = reset_game()
+            game_over = False
+
+    pygame.display.flip()
+    clock.tick(speed)
+
+pygame.quit()
