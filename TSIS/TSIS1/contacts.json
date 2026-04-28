@@ -1,0 +1,37 @@
+[
+    {
+        "name": "Merey",
+        "phone": "87056182522",
+        "email": "turgynbekovamerey@gmail.com",
+        "birthday": "2004-03-20",
+        "group": "family"
+    },
+    {
+        "name": "Mingyu",
+        "phone": "8777777777",
+        "email": "kimmingyu@gmail.com",
+        "birthday": "1997-04-06",
+        "group": "other"
+    },
+    {
+        "name": "Araika",
+        "phone": "87071112233",
+        "email": "araika@univ.kz",
+        "birthday": "2005-05-15",
+        "group": "friend"
+    },
+    {
+        "name": "Manat",
+        "phone": "852641",
+        "email": "fghjklds@gmail.com",
+        "birthday": "2008-04-10",
+        "group": "other"
+    },
+    {
+        "name": "Merey",
+        "phone": "87056182522",
+        "email": "merey_updated@gmail.com",
+        "birthday": "2004-03-20",
+        "group": "family"
+    }
+]
